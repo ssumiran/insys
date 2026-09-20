@@ -40,15 +40,20 @@ public class StudentService {
 		Student student = studentRepository.findById(id).get();
 		StudentResponse studentResponse = new StudentResponse(student);
 		System.out.println("uri : "+webClient.get().uri("/getById/" + student.getAddressId()).toString());
+		
+		//Calling getAddress API
 		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
 		
 		return studentResponse;
 	}
 	
+	//Method using Spring WebClient to call Address API 
+	//Using Mono from reactor.core.publisher.Mono  still doesn't work
 	public AddressResponse getAddressById (long addressId) {
 		Mono<AddressResponse> addressResponse = 
 				webClient.get().uri("/getById/" + addressId)
-		.retrieve().bodyToMono(AddressResponse.class);
+				.retrieve()
+				.bodyToMono(AddressResponse.class);
 		
 		return addressResponse.block();
 	}
