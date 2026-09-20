@@ -1,7 +1,16 @@
 package u.address.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import u.address.request.CreateAddressRequest;
+import u.address.response.AddressResponse;
+import u.address.service.AddressService;
 
 @RestController
 @RequestMapping("/api/address")
@@ -12,6 +21,7 @@ public class AddressController {
 
 	@PostMapping("/create")
 	public AddressResponse createAddress (@RequestBody CreateAddressRequest createAddressRequest) {
+		
 		return addressService.createAddress(createAddressRequest);
 	}
 	
