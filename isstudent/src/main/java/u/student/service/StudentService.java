@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
+import u.student.cloud.feignclient.AddressFeignClient;
 import u.student.entity.Student;
 import u.student.repository.StudentRepository;
 import u.student.request.CreateStudentRequest;
@@ -19,6 +20,9 @@ public class StudentService {
 	
 	@Autowired
 	WebClient webClient;
+	
+	@Autowired
+	AddressFeignClient addressFeignClient;
 
 	public StudentResponse createStudent(CreateStudentRequest createStudentRequest) {
 
@@ -32,7 +36,12 @@ public class StudentService {
 
 		StudentResponse studentResponse = new StudentResponse(student);
 		
+		//Calling getAddress API using WebClient
 		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+				
+		//Calling Feign Client Interface to getAddress API
+		studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
+		
 		return studentResponse;
 	}
 	
@@ -41,8 +50,11 @@ public class StudentService {
 		StudentResponse studentResponse = new StudentResponse(student);
 		System.out.println("uri : "+webClient.get().uri("/getById/" + student.getAddressId()).toString());
 		
-		//Calling getAddress API
+		//Calling getAddress API using WebClient
 		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+		
+		//Calling Feign Client Interface to getAddress API
+		studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
 		
 		return studentResponse;
 	}
