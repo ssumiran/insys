@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Mono;
 import u.student.entity.Student;
 import u.student.repository.StudentRepository;
 import u.student.request.CreateStudentRequest;
+import u.student.response.AddressResponse;
 import u.student.response.StudentResponse;
 
 @Service
@@ -28,11 +30,27 @@ public class StudentService {
 		student.setAddressId(createStudentRequest.getAddressId());
 		student = studentRepository.save(student);
 
-		return new StudentResponse(student);
+		StudentResponse studentResponse = new StudentResponse(student);
+		
+		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+		return studentResponse;
 	}
 	
 	public StudentResponse getById (long id) {
-		return new StudentResponse(studentRepository.findById(id).get());
+		Student student = studentRepository.findById(id).get();
+		StudentResponse studentResponse = new StudentResponse(student);
+		System.out.println("uri : "+webClient.get().uri("/getById/" + student.getAddressId()).toString());
+		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
+		
+		return studentResponse;
+	}
+	
+	public AddressResponse getAddressById (long addressId) {
+		Mono<AddressResponse> addressResponse = 
+				webClient.get().uri("/getById/" + addressId)
+		.retrieve().bodyToMono(AddressResponse.class);
+		
+		return addressResponse.block();
 	}
 }
 
