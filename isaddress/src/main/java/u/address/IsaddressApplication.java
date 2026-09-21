@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 //@ComponentScan({"u.address.controller", "u.address.service"})
 //@EntityScan("u.address.entity")
-//@EnableJpaRepositories("com.infybuzz.repository")
+//@EnableJpaRepositories("u.address.repository")
 @EnableDiscoveryClient
 public class IsaddressApplication {
 
