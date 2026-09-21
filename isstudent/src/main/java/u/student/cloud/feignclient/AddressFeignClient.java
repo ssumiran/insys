@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import u.student.response.AddressResponse;
 
-@FeignClient( url = "${address.service.url}", 
-				value="address-feignclient",
+@FeignClient( //url = "${address.service.url}",  //Remove URL because using Eureka Server
+				value="address-service",         // Name Address Microservice register in Eureka Server
 				path = "/api/address")
 public interface AddressFeignClient {
 	
