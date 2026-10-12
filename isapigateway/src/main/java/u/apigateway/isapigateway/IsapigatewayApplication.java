@@ -12,4 +12,8 @@ public class IsapigatewayApplication {
 		SpringApplication.run(IsapigatewayApplication.class, args);
 	}
 
+	
+	//Postman
+	//After using Gateway API the URL
+	//http://localhost:9090/student-service/api/student/getById/1
 }
