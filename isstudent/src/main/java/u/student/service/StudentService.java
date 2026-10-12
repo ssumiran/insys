@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import reactor.core.publisher.Mono;
 import u.student.cloud.feignclient.AddressFeignClient;
 import u.student.entity.Student;
@@ -24,6 +25,9 @@ public class StudentService {
 	@Autowired
 	AddressFeignClient addressFeignClient;
 
+	@Autowired
+	CustomeService customeService;
+	
 	public StudentResponse createStudent(CreateStudentRequest createStudentRequest) {
 
 		Student student = new Student();
@@ -40,7 +44,7 @@ public class StudentService {
 		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
 				
 		//Calling Feign Client Interface to getAddress API
-		studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
+		//studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
 		
 		return studentResponse;
 	}
@@ -54,20 +58,37 @@ public class StudentService {
 		//studentResponse.setAddressResponse(getAddressById(student.getAddressId()));
 		
 		//Calling Feign Client Interface to getAddress API
-		studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
+		//studentResponse.setAddressResponse(addressFeignClient.getById(student.getAddressId()));
+		
+		//AOP CustomeService class
+		studentResponse.setAddressResponse(customeService.getAddressById(student.getAddressId()));
 		
 		return studentResponse;
 	}
 	
 	//Method using Spring WebClient to call Address API 
-	//Using Mono from reactor.core.publisher.Mono  still doesn't work
+	//Using Mono from reactor.core.publisher.Mono  still doesn't work  
+	//Now using FeignClient
+/*	@CircuitBreaker( name = "addressService" ,
+					fallbackMethod = "fallbackGetAddressId")
 	public AddressResponse getAddressById (long addressId) {
-		Mono<AddressResponse> addressResponse = 
-				webClient.get().uri("/getById/" + addressId)
-				.retrieve()
-				.bodyToMono(AddressResponse.class);
 		
-		return addressResponse.block();
-	}
+		//Using FeignClient
+		AddressResponse addressResponse = addressFeignClient.getById(addressId);
+		return addressResponse;
+*/		
+//		Mono<AddressResponse> addressResponse = 
+//				webClient.get().uri("/getById/" + addressId)
+//				.retrieve()
+//				.bodyToMono(AddressResponse.class);
+//		
+//		return addressResponse.block();
+	//}
+	
+	//fallbackMethod for Internal Server Error -- return empty/null AddressResponse object  
+	//Must have same signature with original method
+/*	public AddressResponse fallbackGetAddressId (long addressId) {
+		return new AddressResponse();
+	}*/	
 }
 
